@@ -1,4 +1,4 @@
-# #### **# Setting up OPA Gatekeeper in GKE**
+# ** Setting up OPA Gatekeeper in GKE**
 
 #### # Step 1: Deploy OPA Gatekeeper
 To deploy OPA Gatekeeper, follow these steps:
@@ -36,7 +36,7 @@ Build the Constraints by applying the YAML configuration file:
 
 kubectl create -f ./constraint.yaml
 
-#### # Step 6: Test the Setup
+####  # Step 6: Test the Setup
 
 #### # 6.1: Check Constraints
 Verify that the Constraints and Constraint Templates are created successfully:
