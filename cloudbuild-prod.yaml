@@ -1,5 +1,18 @@
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+    - 'container'
+    - 'clusters'
+    - 'get-credentials'
+    - '${_CLUSTER_NAME}'
+    - '--zone'
+    - '${_CLUSTER_ZONE}'
+    - '--project'
+    - '${_PROJECT_ID}'
+  id: 'Get GKE Credentials'
+  
 - name: 'gcr.io/cloud-builders/git'
-  args: ['clone', 'https://github.com/your-repo/gatekeeper-policy.git']
+  args: ['clone', 'https://github.com/viks1102/gatekeeper-policy.git']
   dir: '/workspace'
 
 - name: 'gcr.io/cloud-builders/kubectl'
