@@ -1,3 +1,4 @@
+# Constraint
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: K8sPSPPrivilegedContainer
 metadata:
