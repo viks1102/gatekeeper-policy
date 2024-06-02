@@ -1,0 +1,29 @@
+- name: 'gcr.io/cloud-builders/git'
+  args: ['clone', 'https://github.com/your-repo/gatekeeper-policy.git']
+  dir: '/workspace'
+
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - '/workspace/gatekeeper-policy/kubernetes-np/constrainttemplate.yaml'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=${_CLUSTER_ZONE}'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
+
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+    - 'apply'
+    - '-f'
+    - '/workspace/gatekeeper-policy/kubernetes-np/constraint.yaml'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=${_CLUSTER_ZONE}'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _CLUSTER_NAME: 'gke-cluster-nonprod'
+  _CLUSTER_ZONE: 'us-central1-b'
+  _PROJECT_ID: 'dtonic-demo-k8s'
