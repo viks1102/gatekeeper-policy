@@ -1,3 +1,45 @@
+steps:
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+    - 'container'
+    - 'clusters'
+    - 'get-credentials'
+    - '${_CLUSTER_NAME}'
+    - '--zone'
+    - '${_CLUSTER_ZONE}'
+    - '--project'
+    - '${_PROJECT_ID}'
+  id: 'Get GKE Credentials'
+
+- name: 'gcr.io/cloud-builders/helm'
+  args:
+    - 'repo'
+    - 'add'
+    - 'gatekeeper'
+    - 'https://open-policy-agent.github.io/gatekeeper/charts'
+  id: 'Add Gatekeeper Helm Repo'
+
+- name: 'gcr.io/cloud-builders/helm'
+  args:
+    - 'repo'
+    - 'update'
+  id: 'Update Helm Repos'
+
+- name: 'gcr.io/cloud-builders/helm'
+  args:
+    - 'install'
+    - 'gatekeeper'
+    - 'gatekeeper/gatekeeper'
+    - '--namespace'
+    - 'gatekeeper-system'
+    - '--create-namespace'
+    - '-f'
+    - '/workspace/helm/values.yaml'
+  id: 'Install Gatekeeper'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=${_CLUSTER_ZONE}'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
+
 - name: 'gcr.io/cloud-builders/git'
   args: ['clone', 'https://github.com/your-repo/gatekeeper-policy.git']
   dir: '/workspace'
@@ -6,7 +48,7 @@
   args:
     - 'apply'
     - '-f'
-    - '/workspace/gatekeeper-policy/kubernetes-np/constrainttemplate.yaml'
+    - '/workspace/gatekeeper-policy/kubernetes/constrainttemplate.yaml'
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=${_CLUSTER_ZONE}'
     - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
@@ -15,7 +57,7 @@
   args:
     - 'apply'
     - '-f'
-    - '/workspace/gatekeeper-policy/kubernetes-np/constraint.yaml'
+    - '/workspace/gatekeeper-policy/kubernetes/constraint.yaml'
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=${_CLUSTER_ZONE}'
     - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
@@ -24,6 +66,6 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 substitutions:
-  _CLUSTER_NAME: 'gke-cluster-nonprod'
-  _CLUSTER_ZONE: 'us-central1-b'
+  _CLUSTER_NAME: 'gke-cluster-prod'
+  _CLUSTER_ZONE: 'us-east1'
   _PROJECT_ID: 'dtonic-demo-k8s'
